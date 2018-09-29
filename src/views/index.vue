@@ -6,19 +6,33 @@
                             <img  width="750" height="340" src="../../static/img/banner.jpg" alt="">
                             <p class="y13">13亿人都会用的云笔记</p>
                         </div>
-                        <div class="img-right">
+                        <div v-if="!userInfo.username" class="img-right">
                             <el-form :model="form" label-width="220px" class="demo-ruleForm">
                                     <el-form-item  >
-                                        <el-input class="input" placeholder="邮箱" v-model="form.user"></el-input>
+                                        <el-input class="input" placeholder="用户名" v-model="form.email"></el-input>
                                     </el-form-item >
                                     <el-form-item >
-                                        <el-input class="input" placeholder="密码" type="password" v-model="form.pass" ></el-input>
+                                        <el-input class="input" placeholder="密码" type="password" @keyup.enter="handleLogin" v-model="form.password" ></el-input>
                                     </el-form-item>
                                     <el-form-item>
                                         <el-button type="primary" @click="handleLogin" >登录</el-button>
-                                        <el-button class="button-zc" @click="handleZc" type="primary" plain>注册</el-button>
+                                        <el-button class="button-zc" @click="$router.push('/region')" type="primary" plain>注册</el-button>
                                     </el-form-item>
                             </el-form>
+                        </div>
+                        <div v-else  class="img-right">
+                            <div class="img-user">
+                                <img width="150" height="150" :src="userInfo.avatar">
+                            </div>
+                            <div class="user-name" >
+                                用户名:{{userInfo.username}}
+                            </div>
+                            <div class="user-email">
+                                邮箱地址：{{userInfo.email}}
+                            </div>
+                            <div class="user-button">
+                               <el-button  @click="clearLogin" type="info"> 退出登录</el-button>
+                            </div>
                         </div>
                 </div>
 
@@ -47,37 +61,52 @@
 </template>
 <script>
 // import cookies from 'js-cookie'
+import {mapState} from 'vuex'
 export default {
     data(){
         return{
             form:{
-user:"",
-pass:"",
+email:"",
+password:"",
             }
         }
     },
     methods:{
         handleLogin(){
-this.$message('登录成功')
-let params={username:this.user,password:this.password}
+let params=this.form
 this.$axios.post('/login',params).then(res=>{
-    console.log(process.env.NODE_ENV)
-    let basePath=process.env.NODE_ENV=='development'?'/api':''
-    if(res.data.code==200){
-        this.usermsg=res.data.data
-        this.usermsg.avatar=process.env.NODE_ENV=='development'?'/api'+res.data.data.avatar:res.data.data.avatar
-        // cookies.set('username',this.usermsg.email,{expires:14})
-        // cookies.set('avatar',this.usermsg.avatar,{expires:14})
-        this.$message("登陆成功，欢迎回来"+res.data.data.username)
+    console.log(params)
+    if(res.code==200){
+        // this.usermsg=res.data
+        console.log(res)
+        this.$message("登陆成功，欢迎回来"+res.data.username)
+        this.$store.commit('CHANGE_userInfo',res.data)
     }
     else{
-        this.$message(res.data.msg)
+        this.$message(res.msg)
     }
 })
         },
-        handleZc(){
-            this.$router.push('/region')
-        }
+      clearLogin(){
+           let data={
+              username:'',
+              email:'',
+              avator:'',
+              password:''}
+          this.$axios.get('/layout').then(res=>{
+             if(res.code==200){
+                 this.$message.success(res.msg)
+                 this.$store.commit('CHANGE_userInfo',data)
+             }else{
+                 this.$message('登录已过期')
+                this.$store.commit('CHANGE_userInfo',data)
+             } 
+          })
+        
+      }
+    },
+    computed:{
+        ...mapState(['userInfo'])
     }
     
 }
@@ -119,6 +148,12 @@ position: relative;
              border-radius: 4px;
              padding-top:50px;
              box-sizing: border-box;
+             .user-name{
+                 font-size: 16px;
+             }user-email{
+                 font-size: 16px;            
+                  }
+       
               .input{
                   width:300px;
                   display: block;

@@ -5,15 +5,16 @@
 <h2>新用户注册</h2>
 <el-form >
     <el-form-item >
-        <el-input placeholder="用户名" v-model="user"></el-input>
+        <el-input placeholder="用户名" v-model="formData.username"></el-input>
     </el-form-item>
     <el-form-item>
-        <el-input placeholder="邮箱" v-model="email"></el-input>
+        <el-input placeholder="邮箱" v-model="formData.email"></el-input>
     </el-form-item>
     <el-form-item>
-        <el-input placeholder="密码" v-model="password"></el-input>
+        <el-input type="password" placeholder="密码" v-model="formData.password" 
+        @keyup.enter.native="handleRegister"></el-input>
     </el-form-item>
-    <el-button type="primary" @click="handleLogin" >注册</el-button>
+    <el-button type="primary" @click="handleRegister" >注册</el-button>
 </el-form>
     </div>
 </div>
@@ -23,20 +24,23 @@
 export default {
     data(){
         return{
-         user:"",
+        formData:{
+         username:"",
          password:"",
          email:""   
         }
+        }
     },
     methods:{
-        handleLogin(){
-            this.$axios.post('/user',{username:this.user,password:this.password,email:this.email}).then(
+        handleRegister(){
+            this.$axios.post('/user',this.formData).then(
                 res=>{
-                    if(res.data.code==200){
+                    console.log(res)
+                    if(res.code==200){
                         this.$message('注册成功！')
-                        this.$router.push('/')
+                      setTimeout( ()=> this.$router.push('/'),500)
                     }else{
-                        this.message(res.data.msg)
+                        this.$message(res.msg)
                     }
                 }
             )

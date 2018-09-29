@@ -3,7 +3,7 @@
         <div class="w1170 wrap">
             <h1 @click="$router.push('/')">云笔记</h1>
             <i class="el-icon-search    icon-search"></i>
-        <el-button class="write-btn" @click="$router.push('/writeNode')">
+        <el-button class="write-btn" @click="writeNodeTo">
         写笔记</el-button>
         </div>
     </header>
@@ -12,7 +12,16 @@
 export default {
     data(){
         return{}
-    }
+    },
+    methods:{
+writeNodeTo(){
+if(this.$store.state.userInfo.username){
+    this.$router.push('/writeNode')
+}else{
+    this.$message('请先登录!')
+}
+}
+}   
 }
 </script>
 <style scoped lang="scss" >
