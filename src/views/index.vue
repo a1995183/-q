@@ -38,22 +38,25 @@
 
 
                 <div class="box-bottom">
-                    <div class="bottom-header">
-                        <div class="left-img">
-                            <img width="50" height="50" src="http://pbl.yaojunrong.com/avatar1.jpg">
+                    <div class="bottom-header" v-for="item in content" :key="item._id">
+                        <router-link :to="{name:'article',params:{id:item._id}}">
+                             <div class="left-img">
+                            <img width="70" height="70" :src='item.author.avatar'>
                         </div>
                         <div class="right-text">
                             <p style="font-size:16px ;">
-                                <span class="name" style="font-weight:400;color:#409eff">莫言</span>
+                                <span class="name" v-text="item.author.username" style="font-weight:400;color:#409eff"></span>
                                 <i class="bottom-i"></i>
-                                丰乳肥臀
+                              <span v-text="item.title"> </span>
                             </p>
-                            <p class="lll">浏览：998回复：2分类：知性文章</p>
+                            <p class="lll">浏览：{{item.readnumber}}回复：{{item.commonnum}}分类：{{item.category.name}}</p>
                             
                         </div>
                         <div class="bottom-last">
-                            <p style="font-size:14px">讲述母亲的书籍</p>
+                            <p style="font-size:14px" >{{item.contentText}}</p>
                         </div>
+                        </router-link>
+                       
                     </div>
                 </div>
             </div>
@@ -68,17 +71,22 @@ export default {
             form:{
 email:"",
 password:"",
-            }
+            },
+            content:[],
         }
     },
     methods:{
+        getData(){
+this.$axios.get('./article').then(res=>{
+    this.content=res.data
+
+})
+        },
         handleLogin(){
 let params=this.form
 this.$axios.post('/login',params).then(res=>{
-    console.log(params)
     if(res.code==200){
         // this.usermsg=res.data
-        console.log(res)
         this.$message("登陆成功，欢迎回来"+res.data.username)
         this.$store.commit('CHANGE_userInfo',res.data)
     }
@@ -107,12 +115,22 @@ this.$axios.post('/login',params).then(res=>{
     },
     computed:{
         ...mapState(['userInfo'])
+        //computed只在初始化时被调用
+
+// methods会在数据变化时被调用, 即使变动的数据与自身无关
+    },
+    created(){
+        this.getData()
     }
     
 }
 </script>
 
 <style lang="scss" scoped>
+a{
+    text-decoration: none;
+    color:#333;
+}
 .body{
     margin-top:20px;
     width:1170px;
@@ -175,9 +193,16 @@ position: relative;
         }
          .box-bottom{
                margin-top:30px;
-               width:630px;
+               width:750px;
                text-align: left;
                float: left;
+               .left-img{
+                   float: left;
+                   height:70px;
+                   img{
+                       margin-top:10px;
+                   }
+               }
                   .bottom-i{
               border-left: 1px solid #111;
               margin:0 3px;

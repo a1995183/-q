@@ -34,7 +34,7 @@ const router= new Router({
       name:'write',
       component:writeNode,
       meta:{
-        title:'编辑器'
+        title:'写笔记'
       }
     },
     {
@@ -42,13 +42,24 @@ const router= new Router({
       name:'region',
       component:()=>import('../views/region.vue')
     },
+    {
+      path:"/article",
+      name:"article",
+      meta:{
+        title:'文章'
+      },
+      component:()=>import('../views/article.vue')
+    }
   ]
 })
 router.beforeEach((to,from,next)=>{
+Nprogress.start()
 if(to.meta&&to.meta.title){
   document.title=to.meta.title
 }
-Nprogress.start
 next()
+})
+router.afterEach((to,from)=>{
+  Nprogress.done()
 })
 export default router

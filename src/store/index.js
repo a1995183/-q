@@ -15,7 +15,7 @@ const store=new Vuex.Store({
             state.userInfo=payload
         }
     },
-    actions:{
+    actions:{   
 
     },plugins:[createPersistedState({
         storage:{
