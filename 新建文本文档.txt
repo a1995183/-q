@@ -1,0 +1,5 @@
+wordpress管理员admin
+密码：sudo grep wordpress_admin_passwd /root/env.txt
+数据库：账号root
+密码：sudo grep mysql_root_passwd /root/env.txt
+管理员账号密码85F688231b5f
