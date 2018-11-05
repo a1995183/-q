@@ -36,9 +36,9 @@
                         </div>
                 </div>
 
-
-                <div class="box-bottom">
-                    <div class="bottom-header" v-for="item in content" :key="item._id">
+                <div class="box-bottom-all">
+                       <div class="box-bottom">
+                    <div class="bottom-item" v-for="item in content" :key="item._id">
                         <router-link :to="{name:'article',params:{id:item._id}}">
                              <div class="left-img">
                             <img width="70" height="70" :src='item.author.avatar'>
@@ -59,6 +59,8 @@
                        
                     </div>
                 </div>
+                </div>
+                        
             </div>
     </div>
 </template>
@@ -69,8 +71,8 @@ export default {
     data(){
         return{
             form:{
-email:"",
-password:"",
+            email:"",
+            password:"",
             },
             content:[],
         }
@@ -79,6 +81,7 @@ password:"",
         getData(){
 this.$axios.get('./article').then(res=>{
     this.content=res.data
+    console.log(res.data)
 
 })
         },
@@ -88,6 +91,7 @@ this.$axios.post('/login',params).then(res=>{
     if(res.code==200){
         // this.usermsg=res.data
         this.$message("登陆成功，欢迎回来"+res.data.username)
+        console.log(res.data)
         this.$store.commit('CHANGE_userInfo',res.data)
     }
     else{
@@ -168,7 +172,8 @@ position: relative;
              box-sizing: border-box;
              .user-name{
                  font-size: 16px;
-             }user-email{
+             }
+             .user-email{
                  font-size: 16px;            
                   }
        
@@ -191,19 +196,28 @@ position: relative;
           
        
         }
+        .box-bottom-all{
+            width: 100%;
+            background: #f1f1f1;
+            overflow: auto;
+        }
          .box-bottom{
                margin-top:30px;
                width:750px;
                text-align: left;
                float: left;
-               .left-img{
-                   float: left;
-                   height:70px;
-                   img{
-                       margin-top:10px;
-                   }
+               .bottom-item{
+               margin-top: 20px;
+               background: #fff;
                }
-                  .bottom-i{
+               .left-img{
+                float: left;
+                height:70px;
+                img{
+                margin-top:10px;
+                }
+               }
+            .bottom-i{
               border-left: 1px solid #111;
               margin:0 3px;
           }

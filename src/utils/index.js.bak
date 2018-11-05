@@ -1,8 +1,7 @@
 import axios from 'axios'
 const env = process.env.NODE_ENV
 //process.env.,MODE_ENV==脚手架(开发)环境development生产环境production
-// let baseURL='/apis'
-let baseURL='api'
+let baseURL='http://localhost:3000'
 const instance = axios.create({
     baseURL,
     timeout:15000
